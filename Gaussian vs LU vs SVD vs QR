@@ -1,0 +1,56 @@
+clc;
+clear all;
+close all;
+n= 1000;
+A = floor(10*rand(n)); % Entry of A are integer
+x_exact = floor(10*rand(n,1)); % Set a solution
+B=A*x_exact; % construct matrix B
+
+
+%% gauss
+tic;
+X_g = gauss(A,B);
+toc;
+
+
+%% backslash
+tic;
+X_b = A \ B;
+toc;
+
+
+%% LU decomposition
+tic;
+X_lu = solveLU(A,B);
+toc;
+
+
+%% QR decomposition % Thin QR decomposition
+tic;
+[Q, R] = qr(A, 0);
+X_qr = R \ (Q' * B);
+toc;
+
+
+%% SVD decomposition % Economy-size SVD
+tic;
+[U, S, V] = svd(A, 'econ');
+X_svd = V * (S \ (U' * B));
+toc;
+
+
+%% Error Calculation: Compute residual norm ||x_exact - x||
+err_b = norm(x_exact - X_b);
+err_gauss = norm(x_exact - X_g);
+err_lu = norm(x_exact - X_lu);
+err_qr = norm(x_exact - X_qr);
+err_svd = norm(x_exact - X_svd);
+disp('Errors:');
+fprintf('Backslash error: %.2e\n', err_b);
+fprintf('Gaussian elimination error: %.2e\n', err_gauss);
+fprintf('LU decomposition error: %.2e\n', err_lu);
+fprintf('QR decomposition error: %.2e\n', err_qr);
+fprintf('SVD decomposition error: %.2e\n', err_svd);
+
+
+
