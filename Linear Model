@@ -1,0 +1,37 @@
+clear all;
+clc;
+% Define the points
+x = [1, -1, 0.2, 0, 2];
+y = [2, -8, -2, -3, 7];
+% Create the matrix for linear fit (a + bx)
+% Columns: 1, x
+V = [ones(1, length(x)); x]'
+% Solve for coefficients [a; b] using least-squares (normal equations)
+coeffs = (V'*V) \ (V'*y');
+% Extract coefficients
+a = coeffs(1);
+b = coeffs(2);
+% Display the Linear fit
+fprintf('Linear fit: p(x) = %.4f + %.4fx\n', a, b);
+% Evaluate the Linear model at the given x points
+y_fit = a + b*x;
+% Plot the points and the fitted Linear model
+figure;
+plot(x, y, 'ro', 'MarkerSize', 8, 'LineWidth', 2); % Plot given points
+hold on;
+% Generate points for smooth Line
+x_smooth = linspace(min(x), max(x), 100);
+y_smooth = a + b*x_smooth;
+plot(x_smooth, y_smooth, 'b-', 'LineWidth', 2); % Plot fitted Line
+% Add labels and title
+xlabel('x');
+ylabel('y');
+title('Linear Fit');
+legend('Given Points', 'Fitted Linear');
+grid on;
+hold off;
+% Calculate and display the sum of squared residuals
+residuals = y - y_fit;
+ssr = sum(residuals.^2);
+fprintf('Sum of squared residuals: %.4f\n', ssr);
+
