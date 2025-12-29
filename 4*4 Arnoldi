@@ -1,0 +1,13 @@
+clear all;
+clc;
+%%
+n = 500; m = n; epsilon = 1e-12;
+A = 0.01*randi(n,n); % spdiags([-ones(n,1) 2*ones(n,1) -ones(n,1)], -1:1, n,
+n);
+b = randn(n,1);
+b = b/norm(b);
+%%
+tic; [V, H] = arnoldi(A, b, m); toc;
+fprintf('Orthonormality check (V_4^T V_4):\n'); disp(norm(V' * V));
+fprintf('Verification: norm(AV_4 - V_4 H_{4,3}):\n');
+disp(norm(A * V(:,1:m) - V * H));
