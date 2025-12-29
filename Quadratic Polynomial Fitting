@@ -1,0 +1,61 @@
+clear all;
+clc;
+%% Define input points: (1,1), (-1,5), (3,5)
+x = [1; -1; 3];
+B = [0; -6; -2];
+n=size(x,1);
+%% Construct the Vandermonde matrix A: A * X = y
+A = [x.^2, x, ones(n,1)];
+%% using backslash
+X_b = A \ B;
+%% Gauss elimination
+X_g = gauss(A,B);
+%% MatLab polyfit
+X_m = polyfit(x,B,2)
+%% Verify the solution: Compute residual norm ||Ax - b||
+residual = norm(A*X_b - B);
+fprintf('Backslash: Residual norm ||Ax - b||: %e \n \n', residual);
+residual = norm(A*X_g - B);
+fprintf('Gauss: Residual norm ||Ax - b||: %f \n \n', residual);
+residual = norm(A*X_m' - B);
+fprintf('Polyfit: Residual norm ||Ax - b||: %f \n \n', residual);
+%% Define symbolic polynomial for plotting
+syms w
+f = X_b(1)*w.^2 + X_b(2) *w + X_b(3);
+lower = min(x)-2;
+upper = max(x)+2;
+%% Create figure for plotting
+figure(10);
+hold on;
+% Plot the quadratic polynomial
+fplot(f, [lower,upper], 'LineWidth', 2, 'Color', 'b');
+% Plot the data points
+plot(x, B, 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'r', 'LineWidth', 1.5);
+% Customize plot
+grid on;
+xlabel('x', 'FontSize', 12);
+ylabel('f(x)', 'FontSize', 12);
+% title('Quadratic Curve Fitting', 'FontSize', 14);
+legend('Fitted Curve', 'Data Points', 'Location', 'best', 'FontSize', 10);
+axis tight;
+hold off;
+%% Define the domain for plotting and create the quadratic function
+x_domain = linspace(lower,upper,100); % Renamed to avoid overwriting original
+x
+y_values = X_b(1)*x_domain.^2 + X_b(2)*x_domain + X_b(3);
+%% Fixed function syntax
+%y = @(w) (X_b(1)*w.^2 + X_b(2)*w + X_b(3));
+% y_values = y(x_domain);
+%% Optional: Calculate and plot the curve
+figure(11);
+plot(x_domain, y_values, 'b-', 'LineWidth', 2);
+hold on;
+plot(x, B, 'ro', 'MarkerSize', 8, 'MarkerFaceColor', 'red');
+grid on;
+xlabel('x');
+ylabel('y');
+title('Quadratic Curve Fitting', 'FontSize', 14);
+legend('Fitted Curve', 'Data Points', 'Location', 'best', 'FontSize', 10);
+% Ensure axes are properly scaled
+axis tight;
+hold off;
