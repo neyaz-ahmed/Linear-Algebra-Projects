@@ -1,0 +1,52 @@
+clear all;
+clc;
+% Define the points
+x = [1, 2, 3, 4, 5, 6]
+y = [3, 7, 19, 45, 52, 77 ]
+% Create the Vandermonde matrix for quadratic polynomial (ax^2 + bx + c)
+% Columns: x^2, x, 1
+V = [x.^2; x; ones(1, length(x))]'
+% Create the Vandermonde matrix for cubic polynomial (ax^3 + bx^2 + cx + d)
+% Columns: x^2, x, 1
+W = [x.^3; x.^2; x; ones(1, length(x))]'
+% Solve for coefficients [a; b; c] using least-squares (normal equations)
+coeffs_V = (V'*V) \ (V'*y')
+% Solve for coefficients [a; b; c] using least-squares (normal equations)
+coeffs_W = (W'*W) \ (W'*y')
+% Extract coefficients
+a2 = coeffs_V(1)
+b2 = coeffs_V(2)
+c2 = coeffs_V(3)
+% Extract coefficients
+a3 = coeffs_W(1)
+b3 = coeffs_W(2)
+c3 = coeffs_W(3)
+d3 = coeffs_W(4)
+% Display the Quadratic polynomial
+fprintf('Quadratic polynomial: p2(x) = %.4fx^2 + %.4fx + %.4f\n', a2, b2, c2);
+% Display the Cubic polynomial
+fprintf('Qubic polynomial: p3(x) = %.4fx^3 + %.4fx^2 + %.4fx + %.4f\n', a3,
+b3, c3, d3);
+% Evaluate Quadratic the polynomial at the given x points
+y2_fit = a2*x.^2 + b2*x + c2
+% Evaluate the Cubic polynomial at the given x points
+y3_fit = a3*x.^3 + b3*x.^2 + c3*x + d3
+% Plot the points and the fitted polynomial
+figure;
+plot(x, y, 'ro', 'MarkerSize', 8, 'LineWidth', 2); % Plot given points
+hold on;
+% Generate points for smooth Quadratic polynomial curve
+x_smooth = linspace(min(x), max(x), 100);
+y2_smooth = a2*x_smooth.^2 + b2*x_smooth + c2;
+plot(x_smooth, y2_smooth, 'b-', 'LineWidth', 2); % Plot polynomial curve
+% Generate points for smooth Cubic polynomial curve
+x_smooth = linspace(min(x), max(x), 100);
+y3_smooth = a3*x_smooth.^3 + b3*x_smooth.^2 + c3*x_smooth + d3;
+plot(x_smooth, y3_smooth, 'k-', 'LineWidth', 2); % Plot polynomial curve
+% Add labels and title
+xlabel('x');
+ylabel('y');
+%title('Polynomial Fit');
+legend('Given Points', 'Fitted Polynomial');
+grid on;
+hold off;
