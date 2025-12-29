@@ -1,0 +1,20 @@
+clc;
+clear all;
+close all;
+A = [ 2 1 -1 5;
+-3 -1 2 -6;
+-2 1 2 5;
+4 5 6 2];
+x_exact= [2; 6; -1; 3]; % [ given values of x,y,z,w ]
+B = A*x_exact;
+tic;
+X_g = gauss(A,B)
+toc;
+tic;
+X_b = A \ B
+toc;
+err_b = norm(x_exact - X_b);
+err_gauss = norm(x_exact - X_g);
+disp('Errors:');
+fprintf('Backslash error: %.2e\n', err_b);
+fprintf('Gaussian elimination error: %.2e\n', err_gauss);
