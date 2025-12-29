@@ -1,0 +1,24 @@
+clear all;
+clc;
+[A,b,x] = solveBVP2();
+%% Solve using LU decomposition
+[L, U, P] = lu(A);
+y = L \ (P * b); % Forward substitution
+u_lu = U \ y; % Backward substitution
+disp('LU: Residual norm ||Au - b||_2:');
+disp(norm(A * u_lu - b));
+%% Solve using QR decomposition
+[Q, R] = qr(A);
+u_qr = R \ (Q' * b); % Solve using QR
+disp('QR: Residual norm ||Au - b||_2:');
+disp(norm(A * u_qr - b));
+%% Plot the solution
+figure(11);
+plot(x, u_lu, 'b*-', 'LineWidth', 2, 'DisplayName', 'LU Solution');
+hold on;
+plot(x, u_qr, 'ro-', 'LineWidth', 1, 'DisplayName', 'QR Solution');
+xlabel('x');
+ylabel('u(x)');
+title('Finite Difference Solution to Boundary Value Problem');
+legend('show');
+grid on;
