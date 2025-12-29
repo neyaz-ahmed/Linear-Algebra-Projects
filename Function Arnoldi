@@ -1,0 +1,44 @@
+function [V, H] = arnoldi(A, b, m)
+% arnoldi: Computes Krylov subspace basis, Hessenberg matrix, and Ritz
+values/vectors
+% % Input validation
+n = size(A, 1);
+% Parameters
+epsilon = 1e-12; % Tolerance for breakdown
+V = zeros(n, m+1); % Krylov basis (extra column for last vector)
+H = zeros(m+1, m); % Hessenberg matrix
+k = m; % Number of iterations completed (may be less due to breakdown)
+% Initialize
+V(:, 1) = b / norm(b); % Normalize initial vector
+% Arnoldi iteration
+for i = 1:m
+% Compute w = A * V(:,i)
+w = A * V(:, i);
+% Reorthogonalize w against all previous vectors (Gram-Schmidt)
+for j = 1:i
+h = V(:, j)' * w;
+w = w - h * V(:, j);
+H(j, i) = H(j, i) + h; % Update H to account for
+reorthogonalization
+end
+H(i+1, i) = norm(w); % new entry H(i+1,i) = norm(w)
+% Check for breakdown
+if H(i+1, i) < epsilon
+fprintf('Arnoldi stopped at iteration %d: h_%d,%d < epsilon.\n', i,
+i+1, i);
+k = i; % Truncate at i iterations
+break;
+end
+% Normalize and store next vector
+V(:, i+1) = w / H(i+1, i);
+end
+% Truncate V and H
+V = V(:, 1:k+1); % Include last vector for consistency
+H = H(1:k+1, 1:k); % Hessenberg matrix of size (k+1) x k
+% % Compute Ritz values and vectors (using square H(1:k,1:k) for
+eigenvalues)
+% [W, D] = eig(H(1:k, 1:k)); % Eigenvectors and eigenvalues of H(1:k,1:k)
+% ritz_vals = sort(diag(D), 'descend'); % Ritz values
+% ritz_vecs = V(:, 1:k) * W; % Ritz vectors (approximate eigenvectors of
+A)
+end
