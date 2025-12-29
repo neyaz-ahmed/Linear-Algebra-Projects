@@ -1,0 +1,17 @@
+clc;
+clear all;
+close all;
+A = [2 1 -1 5;
+-3 -1 2 -6;
+-2 1 2 5;
+4 5 6 2];
+B = [ 4; -5; 6; -7 ]
+tic;
+X_g = gauss(A,B)
+toc;
+tic;
+X_b = A \ B
+toc;
+
+
+
